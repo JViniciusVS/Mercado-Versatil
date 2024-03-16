@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="assets/style/style.css">
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <header>
+        <span id="logo">MV</span>
+    </header>
+
+    <main id="createProduct-main">
+        <h1 class="createProduct-main-h1">Atualize seu produto</h1>
+        <div class="createProduct-hero">
+            <section>
+                <form id="createProduct-main-form">
+                    <div class="campoFormulario">
+                        <label for="productName">Nome do produto</label>
+                        <input type="text" name="productName" id="productName">
+                    </div>
+                    <div class="campoFormulario">
+                        <label for="productDescription">Descrição do produto</label>
+                        <input type="text" name="productDescription" id="productDescription">
+                    </div>
+                    <div class="campoFormulario">
+                        <label for="productPrice">Preço do produto</label>
+                        <input type="text" name="productPrice" id="productPrice">
+                    </div>
+                    <div class="campoFormulario">
+                        <label for="productStock">Quantidade em estoque</label>
+                        <input type="text" name="productStock" id="productStock">
+                    </div>
+                    <div class="campoFormulario">
+                        <label for="productImage1">Imagem 1</label>
+                        <input type="url" name="productImage1" id="productImage1" placeholder="digite o link da imagem">
+                    </div>
+                    <div class="campoFormulario">
+                        <label for="productImage2">Imagem 2</label>
+                        <input type="url" name="productImage2" id="productImage2" placeholder="digite o link da imagem">
+                    </div>
+                    <div class="campoFormulario">
+                        <label for="productImage3">Imagem 3</label>
+                        <input type="url" name="productImage3" id="productImage3" placeholder="digite o link da imagem">
+                    </div>
+                    <input type="submit">
+                </form>
+            </section>
+
+            <aside>
+                <div class="createProduct-productInfo">
+                    <span id="product-name">Nome do produto</span>
+                    <span id="product-description">Descrição do produto</span>
+                    <span id="product-price">R$0,00</span>
+                    <span id="product-stock">Em estoque: 0</span>
+                </div>
+
+                <div class="createProduct-images">
+                    <div class="createProduct-image-main">
+                        <img src="" id="img1" alt="">
+                    </div>
+                    <div id="productUserPhotos">
+                        <div class="quads" id="img2"> <img src="" id="otherProductImage" alt=""></div>
+                        <div class="quads" id="img3"> <img src="" id="otherProductImage" alt=""></div>
+                    </div>
+                </div>
+            </aside>
+
+        </div>
+
+    </main>
+
+
+    <footer>
+
+        <div id="footerCards">
+            <div class="footerInfos">
+                <span class="footerTitle">Escolha como pagar</span>
+                <img src="assets/img/cardIcon.png" alt="">
+                <span class="footerDescription">No mercado versátil você é quem manda tendo os seguintes tipos de
+                    pagamentos: Boleto, Pix e no crédito ou debito.</span>
+            </div>
+            <hr>
+
+            <div class="footerInfos">
+                <span class="footerTitle">Frete grátis</span>
+                <img src="assets/img/expressBoxIcon.png" alt="">
+                <span class="footerDescription">Aproveite o frete grátis a partir de R$100 em compras e economize
+                    enquanto desfruta de produtos de alta qualidade.</span>
+            </div>
+            <hr>
+            <div class="footerInfos">
+                <span class="footerTitle">Segurança</span>
+                <img src="assets/img/shieldIcon.png" alt="">
+                <span class="footerDescription">A sua segurança é a nossa prioridade, garantindo uma experiência de
+                    compra online protegida e confiável.</span>
+            </div>
+        </div>
+
+        <hr id="footerHr">
+
+        <nav id="footerNav">
+            <ul id="footerUl">
+                <li><a href="#">Trabalhe conosco</a></li>
+                <li><a href="#">Termos e condições</a></li>
+                <li><a href="#">Cuidado com a sua segurança e privacidade</a></li>
+                <li><a href="#">Contato</a></li>
+                <li><a href="#">Informações sobre segurança</a></li>
+            </ul>
+        </nav>
+    </footer>
+
+
+    <script>
+        function obterParametroConsulta(id) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(id);
+        }
+
+        async function fetchDataAndRenderForm() {
+            const ID = obterParametroConsulta('productIdUrl');
+
+            try {
+                const response = await axios.get(`http://localhost:3000/produtos/${ID}`);
+                const data = response.data;
+
+                document.getElementById('productName').value = data.productName;
+                document.getElementById('productDescription').value = data.productDescription;
+                document.getElementById('productPrice').value = data.productPrice;
+                document.getElementById('productStock').value = data.productStock;
+                document.getElementById('productImage1').value = data.productImage1;
+                document.getElementById('productImage2').value = data.productImage2;
+                document.getElementById('productImage3').value = data.productImage3;
+            } catch (error) {
+                console.error('Erro na requisição', error);
+            }
+        }
+
+        async function enviarAlteracoes() {
+            const ID = obterParametroConsulta('productIdUrl');
+            const form = document.getElementById('createProduct-main-form');
+
+            try {
+                const response = await axios.put(`http://localhost:3000/produtos/${ID}`, {
+                    productName: form.productName.value,
+                    productDescription: form.productDescription.value,
+                    productPrice: form.productPrice.value,
+                    productStock: form.productStock.value,
+                    productImage1: form.productImage1.value,
+                    productImage2: form.productImage2.value,
+                    productImage3: form.productImage3.value,
+                });
+
+                console.log('Alterações enviadas com sucesso:', response.data);
+            } catch (error) {
+                console.error('Erro ao enviar alterações', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchDataAndRenderForm();
+        });
+    </script>
+
+</body>
+
+</html>
